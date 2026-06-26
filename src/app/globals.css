@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font değişkenleri next/font tarafından <html>'e enjekte edilir
+   (--font-display, --font-sans, --font-logo). */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-wall text-ink font-sans antialiased;
+    /* Açık yeşil zemin — üstte gökyüzü aydınlığı + güneş tarafında sıcak ışık */
+    background-color: #A8D63A;
+    background-image:
+      radial-gradient(620px 320px at 82% 2%, rgba(250, 212, 94, 0.35), transparent 60%),
+      radial-gradient(1300px 520px at 50% -6%, rgba(255, 255, 255, 0.45), transparent 66%),
+      linear-gradient(180deg, #C4E06A 0%, #A8D63A 220px);
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: #4E7C45;
+    color: #FBFAF5;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Visible keyboard focus everywhere */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid #141210;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-sketch border-[2.5px] border-ink
+      px-5 py-2.5 font-sans text-base font-bold transition-all duration-200
+      cursor-pointer select-none;
+  }
+  .btn-primary {
+    @apply btn bg-brand-green text-paper shadow-[4px_4px_0_0_#221a10]
+      hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-[6px_6px_0_0_#221a10]
+      active:translate-y-0 active:shadow-none;
+  }
+  .btn-dark {
+    @apply btn bg-ink text-paper shadow-[4px_4px_0_0_#4E7C45]
+      hover:-translate-y-0.5 active:translate-y-0 active:shadow-none;
+  }
+  .btn-ghost {
+    @apply btn bg-paper/40 text-ink hover:bg-ink hover:text-paper;
+  }
+
+  .field-input {
+    @apply w-full rounded-sketch border-[2px] border-ink bg-paper px-4 py-3 text-base
+      text-ink placeholder:text-ink/40 outline-none transition-shadow
+      focus:shadow-[4px_4px_0_0_#4E7C45];
+  }
+  .field-label {
+    @apply mb-1.5 block font-display text-sm font-semibold tracking-wide text-ink;
+  }
+  .field-error {
+    @apply mt-1.5 text-sm font-medium text-brick-dark;
+  }
+
+  .tag {
+    @apply inline-flex items-center gap-1 rounded-full border-[1.5px] border-wood-dark/70
+      bg-paper px-2.5 py-0.5 text-xs font-semibold text-wood-ink;
+  }
+
+  /* Mantar pano yüzeyi — benekli mantar dokusu */
+  .cork {
+    background-color: #C9A36B;
+    background-image:
+      radial-gradient(circle at 18% 28%, rgba(110, 70, 38, 0.55) 0 1.6px, transparent 2px),
+      radial-gradient(circle at 62% 16%, rgba(150, 104, 58, 0.5) 0 1.4px, transparent 2px),
+      radial-gradient(circle at 82% 44%, rgba(100, 64, 34, 0.5) 0 1.8px, transparent 2px),
+      radial-gradient(circle at 33% 64%, rgba(140, 96, 52, 0.5) 0 1.3px, transparent 2px),
+      radial-gradient(circle at 72% 78%, rgba(110, 70, 38, 0.5) 0 1.7px, transparent 2px),
+      radial-gradient(circle at 48% 40%, rgba(120, 80, 44, 0.4) 0 1.2px, transparent 2px),
+      linear-gradient(160deg, #D2AC74 0%, #C49C62 50%, #B98E54 100%);
+    background-size:
+      14px 14px, 19px 19px, 11px 11px, 16px 16px, 13px 13px, 9px 9px, 100% 100%;
+  }
+
+  /* Ahşap çerçeve (mantar panonun kenarı) */
+  .board-frame {
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.07) 0 2px,
+        transparent 2px 9px
+      ),
+      linear-gradient(180deg, #A06E38 0%, #7A4E22 55%, #65411C 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.35),
+      inset 2px 0 2px rgba(0, 0, 0, 0.18),
+      inset -2px 0 2px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Sarı not kâğıdı */
+  .note {
+    background-color: #FAF3B4;
+    background-image: linear-gradient(180deg, #FCF8CE 0%, #F6EEA2 100%);
+    box-shadow:
+      0 1px 1px rgba(34, 26, 16, 0.10),
+      2px 4px 4px -1px rgba(34, 26, 16, 0.18),
+      4px 9px 16px -4px rgba(34, 26, 16, 0.32);
+  }
+
+  /* Yazma modunda not defteri çizgileri */
+  .note-lines {
+    line-height: 26px;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 25px,
+      rgba(58, 51, 32, 0.16) 25px,
+      rgba(58, 51, 32, 0.16) 26px
+    );
+  }
+
+  /* Uzun yasal metinler için okunabilir tipografi */
+  .legal {
+    @apply text-[15px] leading-relaxed text-ink/85;
+  }
+  .legal h2 {
+    @apply mb-3 mt-10 font-display text-2xl font-semibold text-ink;
+  }
+  .legal h3 {
+    @apply mb-2 mt-6 font-display text-lg font-semibold text-ink;
+  }
+  .legal p {
+    @apply mb-4 max-w-prose;
+  }
+  .legal ul {
+    @apply mb-4 max-w-prose list-disc space-y-1.5 pl-5;
+  }
+  .legal ol {
+    @apply mb-4 max-w-prose list-decimal space-y-1.5 pl-5;
+  }
+  .legal strong {
+    @apply font-semibold text-ink;
+  }
+  .legal a {
+    @apply font-semibold text-ink underline decoration-brand-green decoration-2 underline-offset-2;
+  }
+}
+
+/* Honor user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
