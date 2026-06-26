@@ -8,6 +8,15 @@ const nextConfig = {
   compress: true,
   reactStrictMode: true,
 
+  // Ters proxy (OpenLiteSpeed/Nginx) arkasında özel domainde Server Action'ların
+  // çalışması için: Next, Origin başlığını bu listeyle karşılaştırır. Aksi halde
+  // "Invalid Server Actions request" → istemci tarafında "Application error" verir.
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["evecikiyorum.com", "www.evecikiyorum.com"],
+    },
+  },
+
   // OG görseli üreten rotalarda Türkçe TTF fontlarının bundle'a dahil edilmesini garanti et
   outputFileTracingIncludes: {
     "/opengraph-image": ["./src/app/og-fonts/**"],
