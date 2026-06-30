@@ -5,6 +5,7 @@ import { safeEqual } from "@/lib/security";
 import { formatDate, daysLeft } from "@/lib/format";
 import { buildContacts } from "@/lib/contacts";
 import { adminDeleteAction } from "./actions";
+import DeleteButton from "./DeleteButton";
 
 export const dynamic = "force-dynamic";
 
@@ -46,9 +47,14 @@ export default async function AdminPage({
   return (
     <div className="container-page py-12">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="font-display text-3xl font-semibold">
-          Yönetim · {listings.length} ilan
-        </h1>
+        <div>
+          <h1 className="font-display text-3xl font-semibold">
+            Yönetim · {listings.length} ilan
+          </h1>
+          <p className="mt-1 text-sm text-ink/55">
+            Beğenmediğin ilanı <strong>Sil</strong> ile kaldır. Silme kalıcıdır.
+          </p>
+        </div>
         <Link href="/" className="btn-ghost text-sm">Siteye dön</Link>
       </div>
 
@@ -85,9 +91,7 @@ export default async function AdminPage({
                 <form action={adminDeleteAction} className="shrink-0">
                   <input type="hidden" name="id" value={l.id} />
                   <input type="hidden" name="key" value={key} />
-                  <button type="submit" className="btn bg-brick text-paper shadow-[4px_4px_0_0_#141210] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none">
-                    Sil
-                  </button>
+                  <DeleteButton title={l.title} />
                 </form>
               </div>
             );
