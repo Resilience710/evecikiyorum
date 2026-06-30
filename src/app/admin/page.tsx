@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { listAllForAdmin } from "@/lib/listings";
-import { safeEqual } from "@/lib/security";
 import { formatDate, daysLeft } from "@/lib/format";
 import { buildContacts } from "@/lib/contacts";
-import { adminDeleteAction } from "./actions";
+import { isValidSession, ADMIN_COOKIE } from "@/lib/admin-auth";
 import DeleteButton from "./DeleteButton";
 
 export const dynamic = "force-dynamic";
@@ -17,26 +17,43 @@ export const metadata: Metadata = {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ key?: string }>;
+  searchParams: Promise<{ e?: string }>;
 }) {
-  const { key = "" } = await searchParams;
-  const adminKey = process.env.ADMIN_KEY ?? "";
-  const authorized = adminKey.length > 0 && safeEqual(key, adminKey);
+  const { e } = await searchParams;
+  const cookieStore = await cookies();
+  const authorized = isValidSession(cookieStore.get(ADMIN_COOKIE)?.value);
 
   if (!authorized) {
     return (
       <div className="container-page max-w-md py-20">
         <h1 className="font-display text-3xl font-semibold">Yönetim Girişi</h1>
-        <p className="mt-2 text-ink/65">Devam etmek için yönetici anahtarını gir.</p>
-        <form action="/admin" method="get" className="mt-6 space-y-4">
+        <p className="mt-2 text-ink/65">Kullanıcı adı ve şifre ile giriş yap.</p>
+        <form action="/admin/login" method="post" className="mt-6 space-y-4">
           <div>
-            <label htmlFor="key" className="field-label">Yönetici Anahtarı</label>
-            <input id="key" name="key" type="password" className="field-input" autoComplete="off" />
+            <label htmlFor="username" className="field-label">Kullanıcı adı</label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              className="field-input"
+              autoComplete="username"
+              autoCapitalize="none"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="field-label">Şifre</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              className="field-input"
+              autoComplete="current-password"
+            />
           </div>
           <button type="submit" className="btn-primary w-full">Giriş</button>
         </form>
-        {key.length > 0 ? (
-          <p className="mt-4 font-semibold text-brick-dark">Anahtar hatalı.</p>
+        {e ? (
+          <p className="mt-4 font-semibold text-brick-dark">Kullanıcı adı veya şifre hatalı.</p>
         ) : null}
       </div>
     );
@@ -55,7 +72,12 @@ export default async function AdminPage({
             Beğenmediğin ilanı <strong>Sil</strong> ile kaldır. Silme kalıcıdır.
           </p>
         </div>
-        <Link href="/" className="btn-ghost text-sm">Siteye dön</Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link href="/" className="btn-ghost text-sm">Siteye dön</Link>
+          <form action="/admin/logout" method="post">
+            <button type="submit" className="btn-ghost text-sm">Çıkış</button>
+          </form>
+        </div>
       </div>
 
       <div className="mt-8 space-y-4">
@@ -88,9 +110,8 @@ export default async function AdminPage({
                     {buildContacts(l).map((c) => c.label).join(", ") || "iletişim yok"}
                   </p>
                 </div>
-                <form action={adminDeleteAction} className="shrink-0">
+                <form action="/admin/delete" method="post" className="shrink-0">
                   <input type="hidden" name="id" value={l.id} />
-                  <input type="hidden" name="key" value={key} />
                   <DeleteButton title={l.title} />
                 </form>
               </div>
